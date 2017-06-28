@@ -134,7 +134,7 @@ class ARViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         NotificationCenter.default.removeObserver(self)
         super.viewWillDisappear(animated)
-        
+
         // Pause the view's session
         sceneView.session.pause()
     }
@@ -143,7 +143,7 @@ class ARViewController: UIViewController {
         view.endEditing(true)
         super.touchesBegan(touches, with: event)
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Release any cached data, images, etc that aren't in use.
