@@ -1,0 +1,36 @@
+PODS:
+  - Cartography (1.1.0)
+  - ChameleonFramework (2.1.0):
+    - ChameleonFramework/Default (= 2.1.0)
+  - ChameleonFramework/Default (2.1.0)
+  - FontAwesome.swift (1.2.0)
+  - Hero (0.3.6)
+  - NextLevel (0.4.1)
+
+DEPENDENCIES:
+  - Cartography
+  - ChameleonFramework
+  - FontAwesome.swift (from `https://github.com/thii/FontAwesome.swift`, branch `master`)
+  - Hero
+  - NextLevel (~> 0.4.0)
+
+EXTERNAL SOURCES:
+  FontAwesome.swift:
+    :branch: master
+    :git: https://github.com/thii/FontAwesome.swift
+
+CHECKOUT OPTIONS:
+  FontAwesome.swift:
+    :commit: d4bd83d8de195c502af886aad78e47188a6c5b2e
+    :git: https://github.com/thii/FontAwesome.swift
+
+SPEC CHECKSUMS:
+  Cartography: 0538ccb4044acbbda2266335fc58cb4228794d90
+  ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
+  FontAwesome.swift: 609815397a9b51cb4d774969787163c7d1306739
+  Hero: d3c6f4dd80cdcdbb339be64e57ae3b5c3ab9938c
+  NextLevel: 179d2351c95f75cd57676af4eedb25812f761917
+
+PODFILE CHECKSUM: 2a5da7fabfb39a066fea968aac3946d97b95061e
+
+COCOAPODS: 1.2.1
