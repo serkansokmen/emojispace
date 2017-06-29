@@ -14,6 +14,7 @@ import ReplayKit
 import FontAwesome_swift
 import ChameleonFramework
 import Hero
+import ImagePicker
 
 
 enum ARDrawingMode: String {
@@ -24,6 +25,7 @@ enum ARDrawingMode: String {
 
 struct ARViewModel {
     var selectedText: String?
+    var selectedImage: UIImage?
     var drawingMode: ARDrawingMode
 }
 
@@ -35,9 +37,33 @@ class ARViewController: UIViewController {
 
     private var previewView: UIView!
 
+    private var imagePreview: UIImageView = {
+        return UIImageView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
+    }()
+
+    private lazy var imagePicker: ImagePickerController = {
+        var configuration = Configuration()
+        configuration.doneButtonTitle = "Use"
+        configuration.noImagesTitle = "Sorry! There are no images here!"
+        configuration.recordLocation = false
+        configuration.allowMultiplePhotoSelection = false
+        configuration.mainColor = .flatBlackDark
+        configuration.backgroundColor = .flatBlackDark
+        configuration.settingsColor = .flatBlackDark
+        configuration.bottomContainerColor = .flatBlackDark
+        configuration.gallerySeparatorColor = .flatBlackDark
+        configuration.collapseCollectionViewWhileShot = false
+        configuration.cellSpacing = 1.0
+        configuration.OKButtonTitle = "OK"
+        let imagePicker = ImagePickerController(configuration: configuration)
+        imagePicker.delegate = self
+        return imagePicker
+    }()
+
     private var viewModel: ARViewModel = {
         return ARViewModel(
             selectedText: "",
+            selectedImage: nil,
             drawingMode: .text
         )
     }()
@@ -80,9 +106,9 @@ class ARViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private lazy var arScene: ARScene = {
-        guard let scene = SKScene(fileNamed: "ARScene") as? ARScene else {
-            fatalError("Scene named `ARScene` not found!")
+    private lazy var arSceneKitScene: ESARSceneKitScene = {
+        guard let scene = SKScene(fileNamed: "ESARSceneKitScene") as? ESARSceneKitScene else {
+            fatalError("Scene named `ESARSceneKitScene` not found!")
         }
         return scene
     }()
@@ -94,7 +120,7 @@ class ARViewController: UIViewController {
         constrain(sceneView) {
             $0.edges == $0.superview!.edges
         }
-        sceneView.presentScene(self.arScene)
+        sceneView.presentScene(self.arSceneKitScene)
 
         view.addSubview(emojiTextField)
         emojiTextField.isHidden = self.viewModel.drawingMode == .text
@@ -103,6 +129,11 @@ class ARViewController: UIViewController {
             $0.left == $0.superview!.leftMargin
             $0.right == $0.superview!.rightMargin
             $0.height == 50
+        }
+
+        view.addSubview(imagePreview)
+        constrain(imagePreview) {
+            $0.center == $0.superview!.center
         }
 
         navigationItem.rightBarButtonItems = [
@@ -150,13 +181,47 @@ class ARViewController: UIViewController {
     }
 }
 
+extension ARViewController: ImagePickerDelegate {
+    
+    func doneButtonDidPress(_ imagePicker: ImagePickerController, images: [UIImage]) {
+        guard let pickedImage = images.first else {
+            dismiss(animated: true, completion: nil)
+            return
+        }
+        self.imagePreview.image = pickedImage
+        self.viewModel.drawingMode = .image
+
+        // Base64 encode the image and create the request
+//        let binaryImageData = base64EncodeImage(pickedImage)
+//        createRequest(with: binaryImageData)
+
+        dismiss(animated: true, completion: nil)
+    }
+
+    func cancelButtonDidPress(_ imagePicker: ImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+
+    func wrapperDidPress(_ imagePicker: ImagePickerController, images: [UIImage]) {
+        print(images)
+    }
+
+
+}
+
 extension ARViewController: ARSKViewDelegate {
     func view(_ view: ARSKView, nodeFor anchor: ARAnchor) -> SKNode? {
         // Create and configure a node for the anchor added to the view's session.
-        let labelNode = SKLabelNode(text: self.viewModel.selectedText)
-        labelNode.horizontalAlignmentMode = .center
-        labelNode.verticalAlignmentMode = .center
-        return labelNode;
+        switch self.viewModel.drawingMode {
+        case .image:
+            guard let selectedImage = self.viewModel.selectedImage else { return nil }
+            return SKSpriteNode(texture: SKTexture(image: selectedImage), size: self.imagePreview.frame.size)
+        case .text:
+            let labelNode = SKLabelNode(text: self.viewModel.selectedText)
+            labelNode.horizontalAlignmentMode = .center
+            labelNode.verticalAlignmentMode = .center
+            return labelNode
+        }
     }
 
     func session(_ session: ARSession, didFailWithError error: Error) {
@@ -207,6 +272,7 @@ extension ARViewController {
     @objc func handleImageModeSelected(_ sender: UIBarButtonItem) {
         self.viewModel.drawingMode = .image
         self.emojiTextField.isHidden = true
+        present(imagePicker, animated: true, completion: nil)
     }
 
     @objc func handleTextModeSelected(_ sender: UIBarButtonItem) {

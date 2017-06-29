@@ -9,7 +9,7 @@
 import SpriteKit
 import ARKit
 
-class ARScene: SKScene {
+class ESARSceneKitScene: SKScene {
 
     var drawingMode: ARDrawingMode = .text
 

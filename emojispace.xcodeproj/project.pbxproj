@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		E626D2211F0169BA00FC04F3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E626D2201F0169BA00FC04F3 /* AppDelegate.swift */; };
-		E626D2231F0169BA00FC04F3 /* ARScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = E626D2221F0169BA00FC04F3 /* ARScene.sks */; };
-		E626D2251F0169BA00FC04F3 /* ARScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = E626D2241F0169BA00FC04F3 /* ARScene.swift */; };
+		E626D2231F0169BA00FC04F3 /* ESARSceneKitScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = E626D2221F0169BA00FC04F3 /* ESARSceneKitScene.sks */; };
+		E626D2251F0169BA00FC04F3 /* ESARSceneKitScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = E626D2241F0169BA00FC04F3 /* ESARSceneKitScene.swift */; };
 		E626D2271F0169BA00FC04F3 /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E626D2261F0169BA00FC04F3 /* ARViewController.swift */; };
 		E626D22A1F0169BA00FC04F3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E626D2281F0169BA00FC04F3 /* Main.storyboard */; };
 		E626D22C1F0169BA00FC04F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E626D22B1F0169BA00FC04F3 /* Assets.xcassets */; };
@@ -23,8 +23,8 @@
 		C9256FC1A7C130ED97A4CFC5 /* Pods-emojispace.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-emojispace.release.xcconfig"; path = "Pods/Target Support Files/Pods-emojispace/Pods-emojispace.release.xcconfig"; sourceTree = "<group>"; };
 		E626D21D1F0169BA00FC04F3 /* emojispace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = emojispace.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E626D2201F0169BA00FC04F3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E626D2221F0169BA00FC04F3 /* ARScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ARScene.sks; sourceTree = "<group>"; };
-		E626D2241F0169BA00FC04F3 /* ARScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARScene.swift; sourceTree = "<group>"; };
+		E626D2221F0169BA00FC04F3 /* ESARSceneKitScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ESARSceneKitScene.sks; sourceTree = "<group>"; };
+		E626D2241F0169BA00FC04F3 /* ESARSceneKitScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ESARSceneKitScene.swift; sourceTree = "<group>"; };
 		E626D2261F0169BA00FC04F3 /* ARViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewController.swift; sourceTree = "<group>"; };
 		E626D2291F0169BA00FC04F3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E626D22B1F0169BA00FC04F3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -83,8 +83,8 @@
 			isa = PBXGroup;
 			children = (
 				E626D2201F0169BA00FC04F3 /* AppDelegate.swift */,
-				E626D2221F0169BA00FC04F3 /* ARScene.sks */,
-				E626D2241F0169BA00FC04F3 /* ARScene.swift */,
+				E626D2221F0169BA00FC04F3 /* ESARSceneKitScene.sks */,
+				E626D2241F0169BA00FC04F3 /* ESARSceneKitScene.swift */,
 				E626D2261F0169BA00FC04F3 /* ARViewController.swift */,
 				E626D2281F0169BA00FC04F3 /* Main.storyboard */,
 				E626D22B1F0169BA00FC04F3 /* Assets.xcassets */,
@@ -156,7 +156,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E626D2231F0169BA00FC04F3 /* ARScene.sks in Resources */,
+				E626D2231F0169BA00FC04F3 /* ESARSceneKitScene.sks in Resources */,
 				E626D22F1F0169BA00FC04F3 /* LaunchScreen.storyboard in Resources */,
 				E626D22C1F0169BA00FC04F3 /* Assets.xcassets in Resources */,
 				E626D22A1F0169BA00FC04F3 /* Main.storyboard in Resources */,
@@ -219,7 +219,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E626D2271F0169BA00FC04F3 /* ARViewController.swift in Sources */,
-				E626D2251F0169BA00FC04F3 /* ARScene.swift in Sources */,
+				E626D2251F0169BA00FC04F3 /* ESARSceneKitScene.swift in Sources */,
 				E626D2211F0169BA00FC04F3 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -3,11 +3,11 @@ platform :ios, '11.0'
 target 'emojispace' do
     use_frameworks!
 
-    pod 'Cartography'
-    pod 'ChameleonFramework'
+    pod 'Cartography', :git => 'https://github.com/robb/Cartography', :branch => 'master'
+    pod 'ChameleonFramework', :git => 'https://github.com/ViccAlexander/Chameleon', :branch => 'master'
     pod 'FontAwesome.swift', :git => 'https://github.com/thii/FontAwesome.swift', :branch => 'master'
-    pod 'NextLevel', '~> 0.4.0'
     pod 'Hero'
+    pod 'ImagePicker'
 
     post_install do |installer|
         installer.pods_project.targets.each do |target|
