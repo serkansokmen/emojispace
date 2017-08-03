@@ -8,6 +8,7 @@
 
 import UIKit
 import ChameleonFramework
+import Bugsnag
 
 
 @UIApplicationMain
@@ -23,7 +24,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         self.window = UIWindow(frame: UIScreen.main.bounds)
 
-        Chameleon.setGlobalThemeUsingPrimaryColor(UIColor.cyan, with: .light)
+        Bugsnag.start(withApiKey: "52bcad03f3aadb0346388490a55e23b6")
+
+        Chameleon.setGlobalThemeUsingPrimaryColor(UIColor.flatBlack, with: .dark)
 
         let nav = UINavigationController()
         let ar = ARViewController("👾")

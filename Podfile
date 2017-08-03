@@ -5,9 +5,9 @@ target 'emojispace' do
 
     pod 'Cartography', :git => 'https://github.com/robb/Cartography', :branch => 'master'
     pod 'ChameleonFramework', :git => 'https://github.com/ViccAlexander/Chameleon', :branch => 'master'
-    pod 'FontAwesome.swift', :git => 'https://github.com/thii/FontAwesome.swift', :branch => 'master'
+    pod 'FontAwesome.swift'
     pod 'Hero'
-    pod 'ImagePicker'
+    pod 'Bugsnag'
 
     post_install do |installer|
         installer.pods_project.targets.each do |target|

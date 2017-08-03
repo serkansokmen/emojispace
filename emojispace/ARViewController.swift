@@ -14,7 +14,6 @@ import ReplayKit
 import FontAwesome_swift
 import ChameleonFramework
 import Hero
-import ImagePicker
 
 
 enum ARDrawingMode: String {
@@ -38,26 +37,17 @@ class ARViewController: UIViewController {
     private var previewView: UIView!
 
     private var imagePreview: UIImageView = {
-        return UIImageView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
+        imageView.contentMode = .scaleAspectFit
+        return imageView
     }()
 
-    private lazy var imagePicker: ImagePickerController = {
-        var configuration = Configuration()
-        configuration.doneButtonTitle = "Use"
-        configuration.noImagesTitle = "Sorry! There are no images here!"
-        configuration.recordLocation = false
-        configuration.allowMultiplePhotoSelection = false
-        configuration.mainColor = .flatBlackDark
-        configuration.backgroundColor = .flatBlackDark
-        configuration.settingsColor = .flatBlackDark
-        configuration.bottomContainerColor = .flatBlackDark
-        configuration.gallerySeparatorColor = .flatBlackDark
-        configuration.collapseCollectionViewWhileShot = false
-        configuration.cellSpacing = 1.0
-        configuration.OKButtonTitle = "OK"
-        let imagePicker = ImagePickerController(configuration: configuration)
-        imagePicker.delegate = self
-        return imagePicker
+    private lazy var imageGallery: UIImagePickerController = {
+        let gallery = UIImagePickerController()
+        gallery.delegate = self
+        gallery.sourceType = .photoLibrary
+        gallery.allowsEditing = true
+        return gallery
     }()
 
     private var viewModel: ARViewModel = {
@@ -131,31 +121,33 @@ class ARViewController: UIViewController {
             $0.height == 50
         }
 
-        view.addSubview(imagePreview)
-        constrain(imagePreview) {
-            $0.center == $0.superview!.center
-        }
+//        view.addSubview(imagePreview)
+//        constrain(imagePreview) {
+//            $0.top == $0.superview!.top
+//            $0.right == $0.superview!.right
+//            $0.width == 200
+//            $0.height == 200
+//        }
 
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(title: String.fontAwesomeIcon(name: .videoCamera), style: .plain, target: self, action: #selector(startRecording)),
             UIBarButtonItem(title: String.fontAwesomeIcon(name: .font), style: .plain, target: self, action: #selector(handleTextModeSelected)),
             UIBarButtonItem(title: String.fontAwesomeIcon(name: .pictureO), style: .plain, target: self, action: #selector(handleImageModeSelected)),
+            UIBarButtonItem(title: String.fontAwesomeIcon(name: .refresh), style: .plain, target: self, action: #selector(handleRefreshSelected)),
         ]
-        let attributes = [NSAttributedStringKey.font: UIFont.fontAwesome(ofSize: 20)]
+        let attributes = [NSAttributedStringKey.font: UIFont.fontAwesome(ofSize: 25)]
         for buttonItem in navigationItem.rightBarButtonItems! {
             buttonItem.setTitleTextAttributes(attributes, for: .normal)
         }
+
+        sceneView.session.run(ARWorldTrackingSessionConfiguration())
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-
-        // Create a session configuration
-        let configuration = ARWorldTrackingSessionConfiguration()
-
         // Run the view's session
-        sceneView.session.run(configuration)
+//        sceneView.session.run(ARWorldTrackingSessionConfiguration())
 
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardClose),
                                                name: Notification.Name.UIKeyboardWillHide,
@@ -167,12 +159,26 @@ class ARViewController: UIViewController {
         super.viewWillDisappear(animated)
 
         // Pause the view's session
-        sceneView.session.pause()
+//        sceneView.session.pause()
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+
         view.endEditing(true)
         super.touchesBegan(touches, with: event)
+
+        if let touchLocation = touches.first?.location(in: sceneView) {
+
+            // Create a transform with a translation of 0.4 meters in front of the camera
+            // Add to plane
+            if let hit = sceneView.hitTest(touchLocation, types: .featurePoint).first {
+                let translation = matrix_identity_float4x4
+                let transform = simd_mul(hit.worldTransform, translation)
+                DispatchQueue.main.async {
+                    self.sceneView.session.add(anchor: ARAnchor(transform: transform))
+                }
+            }
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -181,41 +187,39 @@ class ARViewController: UIViewController {
     }
 }
 
-extension ARViewController: ImagePickerDelegate {
-    
-    func doneButtonDidPress(_ imagePicker: ImagePickerController, images: [UIImage]) {
-        guard let pickedImage = images.first else {
+// MARK: - UIImagePickerControllerDelegate
+extension ARViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+
+        guard let pickedImage = info[UIImagePickerControllerEditedImage] as? UIImage else {
             dismiss(animated: true, completion: nil)
             return
         }
-        self.imagePreview.image = pickedImage
+
+        self.imagePreview.image = resizeImage(image: pickedImage, newWidth: 1600)
         self.viewModel.drawingMode = .image
-
-        // Base64 encode the image and create the request
-//        let binaryImageData = base64EncodeImage(pickedImage)
-//        createRequest(with: binaryImageData)
-
+        self.viewModel.selectedImage = self.imagePreview.image
         dismiss(animated: true, completion: nil)
     }
 
-    func cancelButtonDidPress(_ imagePicker: ImagePickerController) {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true, completion: nil)
     }
-
-    func wrapperDidPress(_ imagePicker: ImagePickerController, images: [UIImage]) {
-        print(images)
-    }
-
 
 }
 
+// MARK: - ARSKViewDelegate
 extension ARViewController: ARSKViewDelegate {
     func view(_ view: ARSKView, nodeFor anchor: ARAnchor) -> SKNode? {
         // Create and configure a node for the anchor added to the view's session.
         switch self.viewModel.drawingMode {
         case .image:
-            guard let selectedImage = self.viewModel.selectedImage else { return nil }
-            return SKSpriteNode(texture: SKTexture(image: selectedImage), size: self.imagePreview.frame.size)
+            guard let selectedImage = self.viewModel.selectedImage?.copy() as? UIImage else { return nil }
+            let node = SKSpriteNode(texture: SKTexture(image: selectedImage),
+                                    size: CGSize(width: selectedImage.size.width * 0.02,
+                                                 height: selectedImage.size.height * 0.02))
+            return node
         case .text:
             let labelNode = SKLabelNode(text: self.viewModel.selectedText)
             labelNode.horizontalAlignmentMode = .center
@@ -240,6 +244,7 @@ extension ARViewController: ARSKViewDelegate {
     }
 }
 
+// MARK: - UITextFieldDelegate
 extension ARViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         guard let text = textField.text else { return false }
@@ -254,6 +259,7 @@ extension ARViewController: UITextFieldDelegate {
 }
 
 
+// MARK: - Image Related
 extension ARViewController {
 //    private lazy var sceneView: ARSKView = {
 //        let sceneView = ARSKView(frame: .zero)
@@ -272,7 +278,13 @@ extension ARViewController {
     @objc func handleImageModeSelected(_ sender: UIBarButtonItem) {
         self.viewModel.drawingMode = .image
         self.emojiTextField.isHidden = true
-        present(imagePicker, animated: true, completion: nil)
+
+        present(imageGallery, animated: true, completion: nil)
+    }
+
+    @objc func handleRefreshSelected(_ sender: UIBarButtonItem) {
+        sceneView.session.pause()
+        sceneView.session.run(ARWorldTrackingSessionConfiguration())
     }
 
     @objc func handleTextModeSelected(_ sender: UIBarButtonItem) {
@@ -284,20 +296,30 @@ extension ARViewController {
         //        print(notification)
         self.emojiTextField.isHidden = true
     }
+
+    func resizeImage(image: UIImage, newWidth: CGFloat) -> UIImage? {
+        let scale = newWidth / image.size.width
+        let newHeight = image.size.height * scale
+        UIGraphicsBeginImageContext(CGSize(width: newWidth, height: newHeight))
+        image.draw(in: CGRect(x: 0, y: 0, width: newWidth, height: newHeight))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage
+    }
 }
 
+// MARK: - RPPreviewViewControllerDelegate
 extension ARViewController: RPPreviewViewControllerDelegate {
 
     @objc func startRecording() {
         let recorder = RPScreenRecorder.shared()
-        recorder.startRecording{ [unowned self] (error) in
-            if let unwrappedError = error {
-                print(unwrappedError.localizedDescription)
-            } else {
-                self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: String.fontAwesomeIcon(name: .stopCircle),
-                                                                         style: .plain,
-                                                                         target: self,
-                                                                         action: #selector(self.stopRecording))
+        if recorder.isRecording {
+            stopRecording()
+        } else {
+            recorder.startRecording{ (error) in
+                if let unwrappedError = error {
+                    print(unwrappedError.localizedDescription)
+                }
             }
         }
     }
@@ -305,11 +327,6 @@ extension ARViewController: RPPreviewViewControllerDelegate {
     @objc func stopRecording() {
         let recorder = RPScreenRecorder.shared()
         recorder.stopRecording { [unowned self] (preview, error) in
-            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: String.fontAwesomeIcon(name: .videoCamera),
-                                                                     style: .plain,
-                                                                     target: self,
-                                                                     action: #selector(self.startRecording))
-
             if let unwrappedPreview = preview {
                 unwrappedPreview.previewControllerDelegate = self
                 self.present(unwrappedPreview, animated: true)
