@@ -1,22 +1,20 @@
 PODS:
-  - Bugsnag (5.10.1):
-    - KSCrash/RecordingAdvanced (= 1.8.13)
   - Cartography (1.1.0)
   - ChameleonFramework (2.1.0):
     - ChameleonFramework/Default (= 2.1.0)
   - ChameleonFramework/Default (2.1.0)
   - FontAwesome.swift (1.2.0)
+  - Haptica (1.0.3)
   - Hero (0.3.6)
-  - KSCrash/Recording (1.8.13)
-  - KSCrash/RecordingAdvanced (1.8.13):
-    - KSCrash/Recording
+  - Hokusai (0.4.0)
 
 DEPENDENCIES:
-  - Bugsnag
   - Cartography (from `https://github.com/robb/Cartography`, branch `master`)
   - ChameleonFramework (from `https://github.com/ViccAlexander/Chameleon`, branch `master`)
   - FontAwesome.swift
+  - Haptica
   - Hero
+  - Hokusai
 
 EXTERNAL SOURCES:
   Cartography:
@@ -35,13 +33,13 @@ CHECKOUT OPTIONS:
     :git: https://github.com/ViccAlexander/Chameleon
 
 SPEC CHECKSUMS:
-  Bugsnag: 9c2d242eac7f215c40ff0f5813d378e9fcccf6e4
   Cartography: 8ec6e9dc98f6ee6ea6100f345d09426dd349000b
   ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
   FontAwesome.swift: 60063e3f19ba4801155d4b0f2334ab7585763ab3
+  Haptica: eb4683c97ecef22eae232ddbb8cfcd73c74fd179
   Hero: d3c6f4dd80cdcdbb339be64e57ae3b5c3ab9938c
-  KSCrash: 4c3a83f133b60f4bd57e05235ebf8d46e36d378d
+  Hokusai: aa3c38a5f02af0eff35aa69fdd8249c234c956c0
 
-PODFILE CHECKSUM: 512af2b0a4d0eec3fd6b2e67f5fcdf7591b29a35
+PODFILE CHECKSUM: 1a95199b11cf6c9ea4a0c46ac74ba1836fdaaab5
 
 COCOAPODS: 1.2.1

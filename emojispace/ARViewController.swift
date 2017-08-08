@@ -14,6 +14,7 @@ import ReplayKit
 import FontAwesome_swift
 import ChameleonFramework
 import Hero
+import Hokusai
 
 
 enum ARDrawingMode: String {
@@ -129,12 +130,8 @@ class ARViewController: UIViewController {
 //            $0.height == 200
 //        }
 
-        navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(title: String.fontAwesomeIcon(name: .videoCamera), style: .plain, target: self, action: #selector(startRecording)),
-            UIBarButtonItem(title: String.fontAwesomeIcon(name: .font), style: .plain, target: self, action: #selector(handleTextModeSelected)),
-            UIBarButtonItem(title: String.fontAwesomeIcon(name: .pictureO), style: .plain, target: self, action: #selector(handleImageModeSelected)),
-            UIBarButtonItem(title: String.fontAwesomeIcon(name: .refresh), style: .plain, target: self, action: #selector(handleRefreshSelected)),
-        ]
+        navigationItem.rightBarButtonItem =
+            UIBarButtonItem(title: String.fontAwesomeIcon(name: .sliders), style: .plain, target: self, action: #selector(showOptionSelector))
         let attributes = [NSAttributedStringKey.font: UIFont.fontAwesome(ofSize: 25)]
         for buttonItem in navigationItem.rightBarButtonItems! {
             buttonItem.setTitleTextAttributes(attributes, for: .normal)
@@ -184,6 +181,25 @@ class ARViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Release any cached data, images, etc that aren't in use.
+    }
+
+    @objc func showOptionSelector(_ sender: UIBarButtonItem) {
+        let alert = Hokusai()
+        _ = alert.addButton("Record Video") {
+            self.startRecording()
+        }
+        _ = alert.addButton("Enter Text") {
+            self.handleTextModeSelected()
+        }
+        _ = alert.addButton("Select Image") {
+            self.handleImageModeSelected()
+        }
+        _ = alert.addButton("Reset Session") {
+            self.handleRefreshSelected()
+        }
+        alert.colorScheme = .karasu
+        alert.show()
+        alert.cancelButtonTitle = "Cancel"
     }
 }
 
@@ -275,19 +291,19 @@ extension ARViewController {
         return true
     }
 
-    @objc func handleImageModeSelected(_ sender: UIBarButtonItem) {
+    @objc func handleImageModeSelected() {
         self.viewModel.drawingMode = .image
         self.emojiTextField.isHidden = true
 
         present(imageGallery, animated: true, completion: nil)
     }
 
-    @objc func handleRefreshSelected(_ sender: UIBarButtonItem) {
+    @objc func handleRefreshSelected() {
         sceneView.session.pause()
         sceneView.session.run(ARWorldTrackingSessionConfiguration())
     }
 
-    @objc func handleTextModeSelected(_ sender: UIBarButtonItem) {
+    @objc func handleTextModeSelected() {
         self.viewModel.drawingMode = .text
         self.emojiTextField.isHidden = !self.emojiTextField.isHidden
     }

@@ -7,7 +7,9 @@ target 'emojispace' do
     pod 'ChameleonFramework', :git => 'https://github.com/ViccAlexander/Chameleon', :branch => 'master'
     pod 'FontAwesome.swift'
     pod 'Hero'
-    pod 'Bugsnag'
+    pod 'Haptica'
+    pod 'Hokusai'
+
 
     post_install do |installer|
         installer.pods_project.targets.each do |target|
