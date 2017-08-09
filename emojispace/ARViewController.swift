@@ -137,7 +137,7 @@ class ARViewController: UIViewController {
             buttonItem.setTitleTextAttributes(attributes, for: .normal)
         }
 
-        sceneView.session.run(ARWorldTrackingSessionConfiguration())
+        sceneView.session.run(ARWorldTrackingConfiguration())
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -300,7 +300,7 @@ extension ARViewController {
 
     @objc func handleRefreshSelected() {
         sceneView.session.pause()
-        sceneView.session.run(ARWorldTrackingSessionConfiguration())
+        sceneView.session.run(ARWorldTrackingConfiguration())
     }
 
     @objc func handleTextModeSelected() {
