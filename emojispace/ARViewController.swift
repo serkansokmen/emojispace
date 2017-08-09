@@ -11,10 +11,7 @@ import SpriteKit
 import ARKit
 import Cartography
 import ReplayKit
-import FontAwesome_swift
 import ChameleonFramework
-import Hero
-import Hokusai
 
 
 enum ARDrawingMode: String {
@@ -79,7 +76,6 @@ class ARViewController: UIViewController {
         textField.contentVerticalAlignment = .center
         textField.backgroundColor = .white
         textField.delegate = self
-        textField.heroID = "textField"
         return textField
     }()
 
@@ -131,11 +127,7 @@ class ARViewController: UIViewController {
 //        }
 
         navigationItem.rightBarButtonItem =
-            UIBarButtonItem(title: String.fontAwesomeIcon(name: .sliders), style: .plain, target: self, action: #selector(showOptionSelector))
-        let attributes = [NSAttributedStringKey.font: UIFont.fontAwesome(ofSize: 25)]
-        for buttonItem in navigationItem.rightBarButtonItems! {
-            buttonItem.setTitleTextAttributes(attributes, for: .normal)
-        }
+            UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(showOptionSelector))
 
         sceneView.session.run(ARWorldTrackingConfiguration())
     }
@@ -184,22 +176,20 @@ class ARViewController: UIViewController {
     }
 
     @objc func showOptionSelector(_ sender: UIBarButtonItem) {
-        let alert = Hokusai()
-        _ = alert.addButton("Record Video") {
+        let alert = UIAlertController(title: "Options", message: "Please select an option", preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Record Video", style: .default, handler: { _ in
             self.startRecording()
-        }
-        _ = alert.addButton("Enter Text") {
+        }))
+        alert.addAction(UIAlertAction(title: "Enter Text", style: .default, handler: { _ in
             self.handleTextModeSelected()
-        }
-        _ = alert.addButton("Select Image") {
+        }))
+        alert.addAction(UIAlertAction(title: "Select Image", style: .default, handler: { _ in
             self.handleImageModeSelected()
-        }
-        _ = alert.addButton("Reset Session") {
+        }))
+        alert.addAction(UIAlertAction(title: "Reset Session", style: .default, handler: { _ in
             self.handleRefreshSelected()
-        }
-        alert.colorScheme = .karasu
-        alert.show()
-        alert.cancelButtonTitle = "Cancel"
+        }))
+        self.present(alert, animated: true, completion: nil)
     }
 }
 

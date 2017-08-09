@@ -3,18 +3,12 @@ PODS:
   - ChameleonFramework (2.1.0):
     - ChameleonFramework/Default (= 2.1.0)
   - ChameleonFramework/Default (2.1.0)
-  - FontAwesome.swift (1.2.0)
-  - Haptica (1.0.3)
-  - Hero (0.3.6)
-  - Hokusai (0.4.0)
+  - Haptica (1.0.2)
 
 DEPENDENCIES:
   - Cartography (from `https://github.com/robb/Cartography`, branch `master`)
   - ChameleonFramework (from `https://github.com/ViccAlexander/Chameleon`, branch `master`)
-  - FontAwesome.swift
-  - Haptica
-  - Hero
-  - Hokusai
+  - Haptica (from `https://github.com/efremidze/Haptica`, branch `swift4`)
 
 EXTERNAL SOURCES:
   Cartography:
@@ -23,6 +17,9 @@ EXTERNAL SOURCES:
   ChameleonFramework:
     :branch: master
     :git: https://github.com/ViccAlexander/Chameleon
+  Haptica:
+    :branch: swift4
+    :git: https://github.com/efremidze/Haptica
 
 CHECKOUT OPTIONS:
   Cartography:
@@ -31,15 +28,15 @@ CHECKOUT OPTIONS:
   ChameleonFramework:
     :commit: 6dd284bde21ea2e7f9fd89bc36f40df16e16369d
     :git: https://github.com/ViccAlexander/Chameleon
+  Haptica:
+    :commit: 45d30a02024cb2607be92f1f346967f5d7f325db
+    :git: https://github.com/efremidze/Haptica
 
 SPEC CHECKSUMS:
   Cartography: 8ec6e9dc98f6ee6ea6100f345d09426dd349000b
   ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
-  FontAwesome.swift: 60063e3f19ba4801155d4b0f2334ab7585763ab3
-  Haptica: eb4683c97ecef22eae232ddbb8cfcd73c74fd179
-  Hero: d3c6f4dd80cdcdbb339be64e57ae3b5c3ab9938c
-  Hokusai: aa3c38a5f02af0eff35aa69fdd8249c234c956c0
+  Haptica: 2db289922016078dcc1439455d0bc33935a35b32
 
-PODFILE CHECKSUM: 1a95199b11cf6c9ea4a0c46ac74ba1836fdaaab5
+PODFILE CHECKSUM: bc5eb9665c1a41f0cc6847938975e51a6b37206f
 
 COCOAPODS: 1.2.1

@@ -5,20 +5,7 @@ target 'emojispace' do
 
     pod 'Cartography', :git => 'https://github.com/robb/Cartography', :branch => 'master'
     pod 'ChameleonFramework', :git => 'https://github.com/ViccAlexander/Chameleon', :branch => 'master'
-    pod 'FontAwesome.swift'
-    pod 'Hero'
-    pod 'Haptica'
-    pod 'Hokusai'
-
-
-    post_install do |installer|
-        installer.pods_project.targets.each do |target|
-            target.build_configurations.each do |config|
-                config.build_settings['SWIFT_VERSION'] = '3.2'
-                config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '10.10'
-            end
-        end
-    end
+    pod 'Haptica', :git => 'https://github.com/efremidze/Haptica', :branch => 'swift4'
 
 end
 
