@@ -14,7 +14,6 @@
 		E626D22A1F0169BA00FC04F3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E626D2281F0169BA00FC04F3 /* Main.storyboard */; };
 		E626D22C1F0169BA00FC04F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E626D22B1F0169BA00FC04F3 /* Assets.xcassets */; };
 		E626D22F1F0169BA00FC04F3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E626D22D1F0169BA00FC04F3 /* LaunchScreen.storyboard */; };
-		E6FB5EF41F3BD2F100AD4024 /* PickerDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6FB5EF31F3BD2F100AD4024 /* PickerDialog.swift */; };
 		F34DEB2AD7044A122B109DC9 /* Pods_emojispace.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 042E00FAA1F3B228D7F44BB5 /* Pods_emojispace.framework */; };
 /* End PBXBuildFile section */
 
@@ -31,7 +30,6 @@
 		E626D22B1F0169BA00FC04F3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E626D22E1F0169BA00FC04F3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E626D2301F0169BA00FC04F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E6FB5EF31F3BD2F100AD4024 /* PickerDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerDialog.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,7 +86,6 @@
 				E626D2221F0169BA00FC04F3 /* ESARSceneKitScene.sks */,
 				E626D2241F0169BA00FC04F3 /* ESARSceneKitScene.swift */,
 				E626D2261F0169BA00FC04F3 /* ARViewController.swift */,
-				E6FB5EF31F3BD2F100AD4024 /* PickerDialog.swift */,
 				E626D2281F0169BA00FC04F3 /* Main.storyboard */,
 				E626D22B1F0169BA00FC04F3 /* Assets.xcassets */,
 				E626D22D1F0169BA00FC04F3 /* LaunchScreen.storyboard */,
@@ -222,7 +219,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E626D2271F0169BA00FC04F3 /* ARViewController.swift in Sources */,
-				E6FB5EF41F3BD2F100AD4024 /* PickerDialog.swift in Sources */,
 				E626D2251F0169BA00FC04F3 /* ESARSceneKitScene.swift in Sources */,
 				E626D2211F0169BA00FC04F3 /* AppDelegate.swift in Sources */,
 			);
