@@ -1,3 +1,3 @@
 # emojispace
 
-Experiment using ARKit and SpriteKit
+Experiment using ARKit, Vision, CoreML and SpriteKit
