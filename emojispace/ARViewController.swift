@@ -163,25 +163,16 @@ class ARViewController: UIViewController {
         view.endEditing(true)
         super.touchesBegan(touches, with: event)
 
-        if let touchLocation = touches.first?.location(in: sceneView) {
+        if let touchLocation = touches.first?.location(in: sceneView),
+            let currentFrame = sceneView.session.currentFrame {
 
-            if let hit = sceneView.hitTest(touchLocation, types: .featurePoint).first {
-                let translation = matrix_identity_float4x4
-                let transform = simd_mul(hit.worldTransform, translation)
-                DispatchQueue.main.async {
-                    self.sceneView.session.add(anchor: ARAnchor(transform: transform))
-                }
-            }
+            switch self.viewModel.drawingMode {
+            case .vision:
 
-            // Add to planes
-            if let hit = sceneView.hitTest(touchLocation, types: .featurePoint).first,
-                let currentFrame = sceneView.session.currentFrame {
+                var translation = matrix_identity_float4x4
+                translation.columns.3.z = -0.4
+                let transform = simd_mul(currentFrame.camera.transform, translation)
 
-                let translation = matrix_identity_float4x4
-                let transform = simd_mul(hit.worldTransform, translation)
-
-                // Add a new anchor to the session
-                //                let anchor = ARAnchor(transform: transform)
                 let classificationRequest = VNCoreMLRequest(model: self.model, completionHandler: { request, error in
 
                     guard let results = request.results else {
@@ -210,8 +201,16 @@ class ARViewController: UIViewController {
                 DispatchQueue.global(qos: .background).async {
                     try? self.handler.perform(self.requests + [classificationRequest], on: currentFrame.capturedImage)
                 }
-            }
 
+            default:
+                if let hit = sceneView.hitTest(touchLocation, types: .featurePoint).first {
+                    let translation = matrix_identity_float4x4
+                    let transform = simd_mul(hit.worldTransform, translation)
+                    DispatchQueue.main.async {
+                        self.sceneView.session.add(anchor: ARAnchor(transform: transform))
+                    }
+                }
+            }
         }
     }
 
