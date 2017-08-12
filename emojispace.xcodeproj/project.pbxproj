@@ -8,12 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		E626D2211F0169BA00FC04F3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E626D2201F0169BA00FC04F3 /* AppDelegate.swift */; };
-		E626D2231F0169BA00FC04F3 /* ESARSceneKitScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = E626D2221F0169BA00FC04F3 /* ESARSceneKitScene.sks */; };
-		E626D2251F0169BA00FC04F3 /* ESARSceneKitScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = E626D2241F0169BA00FC04F3 /* ESARSceneKitScene.swift */; };
 		E626D2271F0169BA00FC04F3 /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E626D2261F0169BA00FC04F3 /* ARViewController.swift */; };
 		E626D22A1F0169BA00FC04F3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E626D2281F0169BA00FC04F3 /* Main.storyboard */; };
 		E626D22C1F0169BA00FC04F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E626D22B1F0169BA00FC04F3 /* Assets.xcassets */; };
 		E626D22F1F0169BA00FC04F3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E626D22D1F0169BA00FC04F3 /* LaunchScreen.storyboard */; };
+		E64C0ADA1F3F29C60063937E /* Inceptionv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = E64C0AD91F3F29C20063937E /* Inceptionv3.mlmodel */; };
+		E64C0ADC1F3F2AB00063937E /* ARBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64C0ADB1F3F2AB00063937E /* ARBridge.swift */; };
 		F34DEB2AD7044A122B109DC9 /* Pods_emojispace.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 042E00FAA1F3B228D7F44BB5 /* Pods_emojispace.framework */; };
 /* End PBXBuildFile section */
 
@@ -23,13 +23,13 @@
 		C9256FC1A7C130ED97A4CFC5 /* Pods-emojispace.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-emojispace.release.xcconfig"; path = "Pods/Target Support Files/Pods-emojispace/Pods-emojispace.release.xcconfig"; sourceTree = "<group>"; };
 		E626D21D1F0169BA00FC04F3 /* emojispace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = emojispace.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E626D2201F0169BA00FC04F3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E626D2221F0169BA00FC04F3 /* ESARSceneKitScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = ESARSceneKitScene.sks; sourceTree = "<group>"; };
-		E626D2241F0169BA00FC04F3 /* ESARSceneKitScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ESARSceneKitScene.swift; sourceTree = "<group>"; };
 		E626D2261F0169BA00FC04F3 /* ARViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewController.swift; sourceTree = "<group>"; };
 		E626D2291F0169BA00FC04F3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E626D22B1F0169BA00FC04F3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E626D22E1F0169BA00FC04F3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E626D2301F0169BA00FC04F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E64C0AD91F3F29C20063937E /* Inceptionv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Inceptionv3.mlmodel; sourceTree = "<group>"; };
+		E64C0ADB1F3F2AB00063937E /* ARBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARBridge.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,10 +83,10 @@
 			isa = PBXGroup;
 			children = (
 				E626D2201F0169BA00FC04F3 /* AppDelegate.swift */,
-				E626D2221F0169BA00FC04F3 /* ESARSceneKitScene.sks */,
-				E626D2241F0169BA00FC04F3 /* ESARSceneKitScene.swift */,
 				E626D2261F0169BA00FC04F3 /* ARViewController.swift */,
+				E64C0ADB1F3F2AB00063937E /* ARBridge.swift */,
 				E626D2281F0169BA00FC04F3 /* Main.storyboard */,
+				E64C0AD91F3F29C20063937E /* Inceptionv3.mlmodel */,
 				E626D22B1F0169BA00FC04F3 /* Assets.xcassets */,
 				E626D22D1F0169BA00FC04F3 /* LaunchScreen.storyboard */,
 				E626D2301F0169BA00FC04F3 /* Info.plist */,
@@ -156,7 +156,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E626D2231F0169BA00FC04F3 /* ESARSceneKitScene.sks in Resources */,
 				E626D22F1F0169BA00FC04F3 /* LaunchScreen.storyboard in Resources */,
 				E626D22C1F0169BA00FC04F3 /* Assets.xcassets in Resources */,
 				E626D22A1F0169BA00FC04F3 /* Main.storyboard in Resources */,
@@ -219,7 +218,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E626D2271F0169BA00FC04F3 /* ARViewController.swift in Sources */,
-				E626D2251F0169BA00FC04F3 /* ESARSceneKitScene.swift in Sources */,
+				E64C0ADA1F3F29C60063937E /* Inceptionv3.mlmodel in Sources */,
+				E64C0ADC1F3F2AB00063937E /* ARBridge.swift in Sources */,
 				E626D2211F0169BA00FC04F3 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

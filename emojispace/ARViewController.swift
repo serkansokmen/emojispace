@@ -12,11 +12,13 @@ import ARKit
 import Cartography
 import ReplayKit
 import ChameleonFramework
+import Vision
 
 
 enum ARDrawingMode: String {
     case text = "text"
     case image = "image"
+    case vision = "vision"
 }
 
 
@@ -26,26 +28,17 @@ struct ARViewModel {
     var drawingMode: ARDrawingMode
 }
 
-//protocol ARViewDrawingModeDelegate {
-//    func didChange(to mode: ARDrawingMode)
-//}
-
 class ARViewController: UIViewController {
 
     private var previewView: UIView!
+    private var model: VNCoreMLModel
+    private var handler: VNSequenceRequestHandler
+    private var requests = [VNRequest]()
 
     private var imagePreview: UIImageView = {
         let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
         imageView.contentMode = .scaleAspectFit
         return imageView
-    }()
-
-    private lazy var imageGallery: UIImagePickerController = {
-        let gallery = UIImagePickerController()
-        gallery.delegate = self
-        gallery.sourceType = .photoLibrary
-        gallery.allowsEditing = true
-        return gallery
     }()
 
     private var viewModel: ARViewModel = {
@@ -79,26 +72,38 @@ class ARViewController: UIViewController {
         return textField
     }()
 
-    init(_ initialText: String) {
-        self.viewModel.selectedText = initialText
+    init(withModel model: VNCoreMLModel) {
+
+        self.model = model
+        self.handler = VNSequenceRequestHandler()
+
         super.init(nibName: nil, bundle: nil)
+
+        let objectsRequest = VNDetectRectanglesRequest(completionHandler: self.handleDetectedRectangles)
+        objectsRequest.minimumSize = 0.1
+        objectsRequest.maximumObservations = 20
+
+        self.requests = [objectsRequest]
     }
 
-    init(with drawingMode: ARDrawingMode) {
-        self.viewModel.drawingMode = drawingMode
-        super.init(nibName: nil, bundle: nil)
+    private func handleDetectedRectangles(request: VNRequest, error: Error?) {
+        DispatchQueue.main.async {
+            let results = request.results as! [VNObservation]
+            print(results)
+            // draw rectangles
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private lazy var arSceneKitScene: ESARSceneKitScene = {
-        guard let scene = SKScene(fileNamed: "ESARSceneKitScene") as? ESARSceneKitScene else {
-            fatalError("Scene named `ESARSceneKitScene` not found!")
-        }
-        return scene
-    }()
+//    private lazy var arSceneKitScene: ESARSceneKitScene = {
+//        guard let scene = SKScene(fileNamed: "ESARSceneKitScene") as? ESARSceneKitScene else {
+//            fatalError("Scene named `ESARSceneKitScene` not found!")
+//        }
+//        return scene
+//    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -107,7 +112,9 @@ class ARViewController: UIViewController {
         constrain(sceneView) {
             $0.edges == $0.superview!.edges
         }
-        sceneView.presentScene(self.arSceneKitScene)
+
+        let scene = SKScene(size: self.view.frame.size)
+        sceneView.presentScene(scene)
 
         view.addSubview(emojiTextField)
         emojiTextField.isHidden = self.viewModel.drawingMode == .text
@@ -158,8 +165,6 @@ class ARViewController: UIViewController {
 
         if let touchLocation = touches.first?.location(in: sceneView) {
 
-            // Create a transform with a translation of 0.4 meters in front of the camera
-            // Add to plane
             if let hit = sceneView.hitTest(touchLocation, types: .featurePoint).first {
                 let translation = matrix_identity_float4x4
                 let transform = simd_mul(hit.worldTransform, translation)
@@ -167,6 +172,46 @@ class ARViewController: UIViewController {
                     self.sceneView.session.add(anchor: ARAnchor(transform: transform))
                 }
             }
+
+            // Add to planes
+            if let hit = sceneView.hitTest(touchLocation, types: .featurePoint).first,
+                let currentFrame = sceneView.session.currentFrame {
+
+                let translation = matrix_identity_float4x4
+                let transform = simd_mul(hit.worldTransform, translation)
+
+                // Add a new anchor to the session
+                //                let anchor = ARAnchor(transform: transform)
+                let classificationRequest = VNCoreMLRequest(model: self.model, completionHandler: { request, error in
+
+                    guard let results = request.results else {
+                        print ("No results")
+                        return
+                    }
+                    let result = results.prefix(through: 4)
+                        .flatMap { $0 as? VNClassificationObservation }
+                        .filter { $0.confidence > 0.3 }
+                        .map { $0.identifier }.joined(separator: ", ")
+                    // Add a new anchor to the session
+                    let anchor = ARAnchor(transform: transform)
+
+                    // Set the identifier
+                    guard result != ARBridge.shared.anchorsToIdentifiers[anchor] else {
+                        return
+                    }
+
+                    DispatchQueue.main.async {
+                        self.sceneView.session.add(anchor: anchor)
+                        ARBridge.shared.anchorsToIdentifiers[anchor] = result
+                    }
+                })
+                classificationRequest.imageCropAndScaleOption = .centerCrop
+
+                DispatchQueue.global(qos: .background).async {
+                    try? self.handler.perform(self.requests + [classificationRequest], on: currentFrame.capturedImage)
+                }
+            }
+
         }
     }
 
@@ -180,14 +225,28 @@ class ARViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Record Video", style: .default, handler: { _ in
             self.startRecording()
         }))
-        alert.addAction(UIAlertAction(title: "Enter Text", style: .default, handler: { _ in
-            self.handleTextModeSelected()
+        alert.addAction(UIAlertAction(title: "Use Text Input", style: .default, handler: { _ in
+            self.viewModel.drawingMode = .text
+            self.emojiTextField.isHidden = false
         }))
-        alert.addAction(UIAlertAction(title: "Select Image", style: .default, handler: { _ in
-            self.handleImageModeSelected()
+        alert.addAction(UIAlertAction(title: "Use Image", style: .default, handler: { _ in
+            self.viewModel.drawingMode = .image
+            self.emojiTextField.isHidden = true
+
+            let gallery = UIImagePickerController()
+            gallery.delegate = self
+            gallery.sourceType = .photoLibrary
+            gallery.allowsEditing = true
+
+            self.present(gallery, animated: true, completion: nil)
+        }))
+        alert.addAction(UIAlertAction(title: "Use Vision to Recognize", style: .default, handler: { _ in
+            self.viewModel.drawingMode = .vision
+            self.emojiTextField.isHidden = true
         }))
         alert.addAction(UIAlertAction(title: "Reset Session", style: .default, handler: { _ in
-            self.handleRefreshSelected()
+            self.sceneView.session.pause()
+            self.sceneView.session.run(ARWorldTrackingConfiguration())
         }))
         self.present(alert, animated: true, completion: nil)
     }
@@ -218,19 +277,34 @@ extension ARViewController: UINavigationControllerDelegate, UIImagePickerControl
 // MARK: - ARSKViewDelegate
 extension ARViewController: ARSKViewDelegate {
     func view(_ view: ARSKView, nodeFor anchor: ARAnchor) -> SKNode? {
-        // Create and configure a node for the anchor added to the view's session.
+
         switch self.viewModel.drawingMode {
+
         case .image:
             guard let selectedImage = self.viewModel.selectedImage?.copy() as? UIImage else { return nil }
             let node = SKSpriteNode(texture: SKTexture(image: selectedImage),
                                     size: CGSize(width: selectedImage.size.width * 0.02,
                                                  height: selectedImage.size.height * 0.02))
             return node
+
         case .text:
             let labelNode = SKLabelNode(text: self.viewModel.selectedText)
             labelNode.horizontalAlignmentMode = .center
             labelNode.verticalAlignmentMode = .center
             return labelNode
+
+        case .vision:
+            if let identifier = ARBridge.shared.anchorsToIdentifiers[anchor] {
+                let labelNode = SKLabelNode(text: identifier)
+                labelNode.horizontalAlignmentMode = .center
+                labelNode.verticalAlignmentMode = .center
+                labelNode.preferredMaxLayoutWidth = 240
+                labelNode.numberOfLines = 0
+                labelNode.lineBreakMode = .byWordWrapping
+                labelNode.fontName = UIFont.boldSystemFont(ofSize: 12).fontName
+                return labelNode
+            }
+            return nil
         }
     }
 
@@ -246,7 +320,6 @@ extension ARViewController: ARSKViewDelegate {
 
     func sessionInterruptionEnded(_ session: ARSession) {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
-
     }
 }
 
@@ -279,23 +352,6 @@ extension ARViewController {
 
     override public var prefersStatusBarHidden: Bool {
         return true
-    }
-
-    @objc func handleImageModeSelected() {
-        self.viewModel.drawingMode = .image
-        self.emojiTextField.isHidden = true
-
-        present(imageGallery, animated: true, completion: nil)
-    }
-
-    @objc func handleRefreshSelected() {
-        sceneView.session.pause()
-        sceneView.session.run(ARWorldTrackingConfiguration())
-    }
-
-    @objc func handleTextModeSelected() {
-        self.viewModel.drawingMode = .text
-        self.emojiTextField.isHidden = !self.emojiTextField.isHidden
     }
 
     @objc func handleKeyboardClose(_ notification: Notification) {

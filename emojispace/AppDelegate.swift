@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Vision
 import ChameleonFramework
 
 
@@ -23,10 +24,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         self.window = UIWindow(frame: UIScreen.main.bounds)
 
-        Chameleon.setGlobalThemeUsingPrimaryColor(UIColor.flatBlack, with: .dark)
+        Chameleon.setGlobalThemeUsingPrimaryColor(UIColor.flatBlack, with: .light)
 
         let nav = UINavigationController()
-        let ar = ARViewController("👾")
+        guard let model = try? VNCoreMLModel(for: Inceptionv3().model) else { fatalError("Model not found") }
+        let ar = ARViewController(withModel: model)
         nav.navigationBar.setBackgroundImage(UIImage(), for: .default)
         nav.navigationBar.shadowImage = UIImage()
         nav.navigationBar.isTranslucent = true
